@@ -1,0 +1,86 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE")
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+apply plugin: "idea"
+apply plugin: "java"
+apply plugin: "checkstyle"
+apply plugin: "findbugs"
+apply plugin: "pmd"
+apply plugin: "jacoco"
+apply plugin: "spring-boot"
+apply plugin: 'war'
+
+task wrapper(type: Wrapper) {
+    gradleVersion = "3.3"
+}
+
+/*war {
+    baseName = 'myapp'
+    version =  '0.5.0'
+}*/
+
+dependencies {
+    compile "org.projectlombok:lombok:1.16.14"
+
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-logging"
+
+    compile "com.fasterxml.uuid:java-uuid-generator:3.1.4"
+
+    // Elasticsearch
+    //compile "org.springframework.boot:spring-boot-starter-data-elasticsearch"
+    //compile "org.elasticsearch:elasticsearch:5.2.2"
+    //compile "org.elasticsearch.client:transport:5.2.2"
+    //testCompile "org.elasticsearch.test:framework:5.2.2"
+
+    // Testing
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "com.github.javafaker:javafaker:0.12"
+    testCompile "com.h2database:h2:1.4.193"
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/resources/main")
+        testSourceDirs += file("src/test")
+    }
+
+    project {
+        jdkName = "1.8"
+        languageLevel = "1.8"
+    }
+}
+
+checkstyle {
+    ignoreFailures = true
+    toolVersion = '7.5.1'
+    sourceSets = [ sourceSets.main ]
+}
+
+findbugs {
+    ignoreFailures = true
+    sourceSets = [ sourceSets.main ]
+}
+
+pmd {
+    ignoreFailures = true
+    sourceSets = [ sourceSets.main ]
+}
+
+test {
+    ignoreFailures = true
+}
+
+check.dependsOn jacocoTestReport
